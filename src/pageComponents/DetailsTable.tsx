@@ -33,6 +33,8 @@ import {
 } from "../@/components/ui/tabs";
 import { useEffect, useState } from "react";
 import Header from "./Header";
+import { RiDeleteBin6Fill } from "react-icons/ri";
+import { GiConfirmed } from "react-icons/gi";
 
 const staticData = [
     {
@@ -68,7 +70,7 @@ const staticData = [
   ];
 
 export default function DetailsTable() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -80,30 +82,30 @@ export default function DetailsTable() {
 
   const handleConfirm = (id: number) => {
     console.log(`Confirm clicked for ID ${id}`);
-    // Add your confirm logic here
+
   };
 
   const handleDecline = (id: number) => {
     console.log(`Decline clicked for ID ${id}`);
-    // Add your decline logic here
+    
   };
 
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">
       <Header/>
-      <div className="flex flex-col m-8 pt-20">
+      <div className="flex flex-col m-8 pt-[3rem]">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
                 <CardDescription>Registered Members</CardDescription>
-                <CardTitle className="text-4xl">50</CardTitle>
+                <CardTitle className="text-[1.2rem]">50</CardTitle>
               </CardHeader>
             </Card>
             <Card x-chunk="dashboard-05-chunk-2">
               <CardHeader className="pb-2">
                 <CardDescription>Confirmed Members</CardDescription>
-                <CardTitle className="text-4xl">42</CardTitle>
+                <CardTitle className="text-[1.2rem]">42</CardTitle>
               </CardHeader>
               {/* <CardContent>
                   <div className="text-xs text-muted-foreground">
@@ -113,6 +115,12 @@ export default function DetailsTable() {
                 <CardFooter>
                   <Progress value={12} aria-label="12% increase" />
                 </CardFooter> */}
+            </Card>
+            <Card x-chunk="dashboard-05-chunk-1">
+              <CardHeader className="pb-2">
+                <CardDescription>Total Attendance</CardDescription>
+                <CardTitle className="text-[1.2rem]">40</CardTitle>
+              </CardHeader>
             </Card>
           </div>
           <Tabs defaultValue="week">
@@ -207,23 +215,18 @@ export default function DetailsTable() {
                             {item.isconfirmed ? (
                               <Badge variant="default">Confirmed</Badge>
                             ) : (
-                              <>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
+                              <div className="flex justify-end gap-[2rem]">
+                                <GiConfirmed
+                                size="1.2rem"
+                                  className="cursor-pointer text-green-500 base-1/2"
                                   onClick={() => handleConfirm(item.id)}
-                                >
-                                  Confirm
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="ml-2"
+                                />
+                                <RiDeleteBin6Fill
+                                size="1.2rem"
+                                  className="cursor-pointer text-red-500 "
                                   onClick={() => handleDecline(item.id)}
-                                >
-                                  Decline
-                                </Button>
-                              </>
+                                />
+                              </div>
                             )}
                           </TableCell>
                         </TableRow>

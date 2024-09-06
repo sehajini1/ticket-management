@@ -13,11 +13,11 @@ export default function Header(){
   }, [darkMode]);
     return(
         <header className="fixed top-0 left-0 right-0 flex justify-between items-center py-4 px-8 bg-background shadow-md opacity-75">
-        <h1 className="text-[2.5rem]  font-bold text-foreground tracking-[.3rem] ">
+        <h1 className="text-[1.3rem]  font-black text-foreground tracking-[.2rem] ">
           Ticket Management System
         </h1>
         <div className="flex items-center space-x-3">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <span className="text-[0.8rem] font-medium text-gray-700 dark:text-gray-300">
             {darkMode ? "Dark Mode" : "Light Mode"}
           </span>
           <button
