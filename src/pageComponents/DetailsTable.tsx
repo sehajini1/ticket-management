@@ -1,4 +1,4 @@
-import { ListFilter } from "lucide-react";
+import { ListFilter, MoreHorizontal } from "lucide-react";
 
 import { Badge } from "../@/components/ui/badge";
 import { Button } from "../@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -45,6 +46,8 @@ import {
   PaginationPrevious,
 } from "../@/components/ui/pagination";
 import { fetchUsers } from "../Servers/API";
+import { useUserContext } from "./contexts/UserContext";
+import UserDetailsDialog  from './AllDetailsDialog'
 
 interface User {
   _id: string;
@@ -62,169 +65,26 @@ interface User {
   sheetRowNumber:number;
 }
 
-const staticData = [
-  {
-    id: 1,
-    name: "Liam Johnson",
-    email: "liam@example.com",
-    status: "Fulfilled",
-    statusType: "secondary" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-23",
-    amount: "$250.00",
-    isconfirmed: true,
-  },
-  {
-    id: 2,
-    name: "Emma Brown",
-    email: "emma@example.com",
-    status: "Fulfilled",
-    statusType: "secondary" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-26",
-    amount: "$450.00",
-    isconfirmed: false,
-  },
-  {
-    id: 3,
-    name: "Olivia Smith",
-    email: "olivia@example.com",
-    status: "Declined",
-    statusType: "outline" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-24",
-    amount: "$150.00",
-    isconfirmed: true,
-  },
-  {
-    id: 4,
-    name: "Olivia Smith",
-    email: "olivia@example.com",
-    status: "Declined",
-    statusType: "outline" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-24",
-    amount: "$150.00",
-    isconfirmed: true,
-  },
-  {
-    id: 5,
-    name: "Olivia Smith",
-    email: "olivia@example.com",
-    status: "Declined",
-    statusType: "outline" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-24",
-    amount: "$150.00",
-    isconfirmed: true,
-  },
-  {
-    id: 6,
-    name: "Olivia Smith",
-    email: "olivia@example.com",
-    status: "Declined",
-    statusType: "outline" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-24",
-    amount: "$150.00",
-    isconfirmed: true,
-  },
-  {
-    id: 7,
-    name: "Emma Brown",
-    email: "emma@example.com",
-    status: "Fulfilled",
-    statusType: "secondary" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-26",
-    amount: "$450.00",
-    isconfirmed: false,
-  },
-  {
-    id: 8,
-    name: "Emma Brown",
-    email: "emma@example.com",
-    status: "Fulfilled",
-    statusType: "secondary" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-26",
-    amount: "$450.00",
-    isconfirmed: false,
-  },
-  {
-    id: 9,
-    name: "Emma Brown",
-    email: "emma@example.com",
-    status: "Fulfilled",
-    statusType: "secondary" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-26",
-    amount: "$450.00",
-    isconfirmed: false,
-  },
-  {
-    id: 10,
-    name: "Emma Brown",
-    email: "emma@example.com",
-    status: "Fulfilled",
-    statusType: "secondary" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-26",
-    amount: "$450.00",
-    isconfirmed: false,
-  },
-  {
-    id: 11,
-    name: "Emma Brown",
-    email: "emma@example.com",
-    status: "Fulfilled",
-    statusType: "secondary" as
-      | "secondary"
-      | "outline"
-      | "default"
-      | "destructive", // Adjust as needed
-    date: "2023-06-26",
-    amount: "$450.00",
-    isconfirmed: false,
-  },
-];
-
 export default function DetailsTable() {
   const [darkMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [users, setUsers] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const { setSelectedUser } = useUserContext(); 
+
+  const handleViewDetails = (user: any) => {
+    console.log("user",user)
+    setSelectedUser(user); 
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+  
 
   useEffect(() => {
     if (darkMode) {
@@ -247,6 +107,7 @@ export default function DetailsTable() {
 
     fetchData();
   }, [currentPage]);
+
 
   const handleConfirm = (id: number) => {
     console.log(`Confirm clicked for ID ${id}`);
@@ -271,6 +132,8 @@ export default function DetailsTable() {
       setCurrentPage(page);
     }
   };
+
+  
 
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">
@@ -348,16 +211,16 @@ export default function DetailsTable() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>S No</TableHead>
+                        <TableHead>No</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead className="hidden sm:table-cell">
                           Contact Number
                         </TableHead>
                         <TableHead className="hidden sm:table-cell">
-                          Email Address
+                          Address
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Date
+                          Career
                         </TableHead>
                         <TableHead className="text-right">Amount</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
@@ -374,7 +237,13 @@ export default function DetailsTable() {
                             </div>
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {user.contactnumber}
+                            {user.contactNumber}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {user.address}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {user.career}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             <Badge className="text-xs" variant={user.name}>
@@ -384,10 +253,26 @@ export default function DetailsTable() {
                           <TableCell className="hidden md:table-cell">
                             {user.name}
                           </TableCell>
+                          <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+                              <DropdownMenuItem onClick={() => handleViewDetails(user)}>View All Details</DropdownMenuItem>
+                              <DropdownMenuItem>View the Slipt</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
                           <TableCell className="text-right">
-                            {user.name}
-                          </TableCell>
-                          {/* <TableCell className="text-right">
                             {user.isconfirmed ? (
                               <Badge variant="default">Confirmed</Badge>
                             ) : (
@@ -404,7 +289,7 @@ export default function DetailsTable() {
                                 />
                               </div>
                             )}
-                          </TableCell> */}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -474,6 +359,7 @@ export default function DetailsTable() {
           </Tabs>
         </div>
       </div>
+      <UserDetailsDialog isOpen={isDialogOpen} onClose={handleCloseDialog}/>
     </div>
   );
 }
