@@ -65,6 +65,19 @@ interface User {
   sheetRowNumber:number;
 }
 
+function getBadgeClass(status: string) {
+  switch (status) {
+    case "approved":
+      return "bg-green-500 text-white hover:ring-1 hover:ring-green-500 hover:bg-transparent hover:text-green-500"; 
+    case "pending":
+      return "bg-yellow-500 text-white hover:ring-1 hover:ring-yellow-500 hover:bg-transparent hover:text-yellow-500"; 
+    case "rejected":
+      return "bg-red-500 text-white hover:ring-1 hover:ring-red-500 hover:bg-transparent hover:text-red-500"; 
+    default:
+      return "bg-gray-500 text-white"; 
+  }
+}
+
 export default function DetailsTable() {
   const [darkMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -205,8 +218,7 @@ export default function DetailsTable() {
             </div>
             <TabsContent value="week">
               <Card x-chunk="dashboard-05-chunk-3">
-                <CardHeader className="px-7">
-                </CardHeader>
+                <CardHeader className="px-7"></CardHeader>
                 <CardContent>
                   <Table>
                     <TableHeader>
@@ -217,19 +229,27 @@ export default function DetailsTable() {
                           Contact Number
                         </TableHead>
                         <TableHead className="hidden sm:table-cell">
-                          Address
+                          NIC
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
                           Career
                         </TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead className="">Ticket Status</TableHead>
+                        <TableHead className=" hidden sm:table-cell">
+                          Gender
+                        </TableHead>
+                        <TableHead className=""></TableHead>
+                        <TableHead className="text-right">
+                          Verify the member
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {users.map((user, index) => (
                         <TableRow key={user._id}>
-                          <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
+                          <TableCell>
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                          </TableCell>
                           <TableCell>
                             <div className="font-medium">{user.name}</div>
                             <div className="hidden text-sm text-muted-foreground md:inline">
@@ -246,32 +266,38 @@ export default function DetailsTable() {
                             {user.career}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            <Badge className="text-xs" variant={user.name}>
-                              {user.ticketStatus}
-                            </Badge>
+                          <Badge className={`text-xs ${getBadgeClass(user.ticketStatus)}`}>
+        {user.ticketStatus}
+      </Badge>
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {user.name}
+                            {user.gender}
                           </TableCell>
                           <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-                              <DropdownMenuItem onClick={() => handleViewDetails(user)}>View All Details</DropdownMenuItem>
-                              <DropdownMenuItem>View the Slipt</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  aria-haspopup="true"
+                                  size="icon"
+                                  variant="ghost"
+                                >
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Toggle menu</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
+                                <DropdownMenuItem
+                                  onClick={() => handleViewDetails(user)}
+                                >
+                                  View All Details
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  View the Slipt
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
                           <TableCell className="text-right">
                             {user.isconfirmed ? (
                               <Badge variant="default">Confirmed</Badge>
@@ -359,7 +385,7 @@ export default function DetailsTable() {
           </Tabs>
         </div>
       </div>
-      <UserDetailsDialog isOpen={isDialogOpen} onClose={handleCloseDialog}/>
+      <UserDetailsDialog isOpen={isDialogOpen} onClose={handleCloseDialog} />
     </div>
   );
 }
