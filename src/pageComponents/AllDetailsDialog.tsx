@@ -17,18 +17,17 @@ export default function AllDetailsDialog({ isOpen, onClose }: { isOpen: boolean,
         </DialogHeader>
         <DialogDescription>
           <div style={{ marginBottom: '1.5rem' }}>
-            <p><strong>Name:</strong> {selectedUser.name}</p>
-            <p><strong>Address:</strong> {selectedUser.address}</p>
-            <p><strong>NIC:</strong> {selectedUser.nic}</p>
-            <p><strong>Gender:</strong> {selectedUser.gender}</p>
-            <p><strong>Career:</strong> {selectedUser.career}</p>
-            <p><strong>Email:</strong> {selectedUser.email}</p>
-            <p><strong>Contact Number:</strong> {selectedUser.contactNumber}</p>
-            <p><strong>Ticket Status:</strong> {selectedUser.ticketStatus}</p>
-            <p><strong>Nature of Business:</strong> {selectedUser.natureOfBusiness}</p>
+          {selectedUser.name && <p><strong>Name:</strong> {selectedUser.name}</p>}
+            {selectedUser.address && <p><strong>Address:</strong> {selectedUser.address}</p>}
+            {selectedUser.nic && <p><strong>NIC:</strong> {selectedUser.nic}</p>}
+            {selectedUser.gender && <p><strong>Gender:</strong> {selectedUser.gender}</p>}
+            {selectedUser.career && <p><strong>Career:</strong> {selectedUser.career}</p>}
+            {selectedUser.email && <p><strong>Email:</strong> {selectedUser.email}</p>}
+            {selectedUser.contactNumber && <p><strong>Contact Number:</strong> {selectedUser.contactNumber}</p>}
+            {selectedUser.ticketStatus && <p><strong>Ticket Status:</strong> {selectedUser.ticketStatus}</p>}
+            {selectedUser.natureOfBusiness && <p><strong>Nature of Business:</strong> {selectedUser.natureOfBusiness}</p>}
           </div>
 
-          {/* Displaying the document link using an iframe */}
           {selectedUser.docLink ? (
             <div>
               <p><strong>Document:</strong></p>
