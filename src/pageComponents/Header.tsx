@@ -12,7 +12,7 @@ export default function Header(){
     }
   }, [darkMode]);
     return(
-        <header className="fixed top-0 left-0 right-0 flex justify-between items-center py-4 px-8 bg-background shadow-md opacity-75">
+        <header className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center py-4 px-8 bg-background shadow-md opacity-100">
         <h1 className="text-[1.3rem]  font-black text-foreground tracking-[.2rem] ">
           Ticket Management System
         </h1>

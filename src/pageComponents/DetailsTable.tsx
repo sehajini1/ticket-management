@@ -87,7 +87,7 @@ export default function DetailsTable() {
   const [totalPages, setTotalPages] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
-  const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | null>(null);
+  const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | 'duplicated' |null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const { setSelectedUser } = useUserContext();
@@ -165,7 +165,7 @@ export default function DetailsTable() {
     }
   };
 
-  const handleActionClick = (action: 'approved' | 'rejected', id: number) => {
+  const handleActionClick = (action: 'approved' | 'rejected' | 'duplicated', id: number) => {
     setSelectedAction(action);
     setSelectedUserId(id);
     setIsStatusDialogOpen(true);
@@ -204,6 +204,7 @@ export default function DetailsTable() {
   const getActionsForStatus = (status: string, id: number) => {
     switch (status) {
       case "pending":
+        case "duplicated":
         return (
           <div className="flex justify-end gap-[2rem]">
             <GiConfirmed
@@ -259,6 +260,11 @@ export default function DetailsTable() {
                 <CardTitle className="text-[1.2rem]">40</CardTitle>
               </CardHeader>
             </Card>
+            <div className="flex justify-end items-center col-span-full">
+    <Button variant="outline" className="w-[8rem]">
+      Refresh
+    </Button>
+  </div>
           </div>
           <Tabs defaultValue="week">
             <div className="flex items-center">
