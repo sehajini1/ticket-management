@@ -48,6 +48,7 @@ import {
 import { fetchUsers, updateUserStatus } from "../Servers/API";
 import { useUserContext } from "./contexts/UserContext";
 import UserDetailsDialog from "./AllDetailsDialog";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 // interface User {
 //   _id: string;
@@ -85,6 +86,9 @@ export default function DetailsTable() {
   const [users, setUsers] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const { setSelectedUser } = useUserContext();
 
@@ -96,7 +100,10 @@ export default function DetailsTable() {
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+    setIsStatusDialogOpen(false);
   };
+
+  
 
   useEffect(() => {
     if (darkMode) {
@@ -121,33 +128,62 @@ export default function DetailsTable() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
-  const handleConfirm =async (id: number) => {
-    try{
-      await updateUserStatus(id,'approved');
-      console.log(`User ${id} confirmed as approved`);
+  // const handleConfirm =async (id: number) => {
+  //   try{
+  //     await updateUserStatus(id,'approved');
+  //     console.log(`User ${id} confirmed as approved`);
+  //     setUsers(prevUsers => 
+  //       prevUsers.map(user =>
+  //         user._id === id ? { ...user, ticketStatus: 'approved' } : user
+  //       )
+  //     );
+  //   }catch(error){
+  //     console.log(`Failed to confirm user ${id}:`,error);
+  //   }
+  // };
+
+  const handleConfirm = async () => {
+    if (selectedUserId === null || selectedAction === null) return;
+    
+    try {
+      if (selectedAction === 'approved') {
+       // await updateUserStatus(selectedUserId, 'approved');
+        console.log(`User ${selectedUserId} confirmed as approved`);
+      } else if (selectedAction === 'rejected') {
+        //await updateUserStatus(selectedUserId, 'rejected');
+        console.log(`User ${selectedUserId} marked as rejected`);
+      } 
+      
       setUsers(prevUsers => 
         prevUsers.map(user =>
-          user._id === id ? { ...user, ticketStatus: 'approved' } : user
+          user._id === selectedUserId ? { ...user, ticketStatus: selectedAction } : user
         )
       );
-    }catch(error){
-      console.log(`Failed to confirm user ${id}:`,error);
+      handleCloseDialog();
+    } catch (error) {
+      console.error(`Failed to perform action on user ${selectedUserId}:`, error);
     }
   };
 
-  const handleDecline = async (id: number) => {
-    try {
-      await updateUserStatus(id, 'rejected');
-      console.log(`User ${id} marked as rejected`);
-      setUsers(prevUsers => 
-        prevUsers.map(user =>
-          user._id === id ? { ...user, ticketStatus: 'rejected' } : user
-        )
-      );
-    } catch (error) {
-      console.error(`Failed to reject user ${id}:`, error);
-    }
+  const handleActionClick = (action: 'approved' | 'rejected', id: number) => {
+    setSelectedAction(action);
+    setSelectedUserId(id);
+    setIsStatusDialogOpen(true);
   };
+
+  // const handleDecline = async (id: number) => {
+  //   try {
+  //     await updateUserStatus(id, 'rejected');
+  //     console.log(`User ${id} marked as rejected`);
+  //     setUsers(prevUsers => 
+  //       prevUsers.map(user =>
+  //         user._id === id ? { ...user, ticketStatus: 'rejected' } : user
+  //       )
+  //     );
+  //   } catch (error) {
+  //     console.error(`Failed to reject user ${id}:`, error);
+  //   }
+  // };
 
   // Get the total number of pages
   // const totalPages = Math.ceil(staticData.length / itemsPerPage);
@@ -173,12 +209,12 @@ export default function DetailsTable() {
             <GiConfirmed
               size="1.2rem"
               className="cursor-pointer text-green-500"
-              onClick={() => handleConfirm(id)}
+              onClick={() => handleActionClick('approved',id)}
             />
             <RiDeleteBin6Fill
               size="1.2rem"
               className="cursor-pointer text-red-500"
-              onClick={() => handleDecline(id)}
+              onClick={() => handleActionClick('rejected',id)}
             />
           </div>
         );
@@ -418,6 +454,12 @@ export default function DetailsTable() {
         </div>
       </div>
       <UserDetailsDialog isOpen={isDialogOpen} onClose={handleCloseDialog} />
+      <ConfirmationDialog
+        isOpen={isStatusDialogOpen}
+        onClose={handleCloseDialog}
+        onConfirm={handleConfirm}
+        action={selectedAction || 'approved'}
+      />
     </div>
   );
 }
