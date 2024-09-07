@@ -45,36 +45,36 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../@/components/ui/pagination";
-import { fetchUsers } from "../Servers/API";
+import { fetchUsers, updateUserStatus } from "../Servers/API";
 import { useUserContext } from "./contexts/UserContext";
-import UserDetailsDialog  from './AllDetailsDialog'
+import UserDetailsDialog from "./AllDetailsDialog";
 
-interface User {
-  _id: string;
-  name: string;
-  addres: string;
-  nic:string;
-  gender:string;
-  career:string;
-  email: string;
-  serialNumber:string;
-  docLink:string;
-  contactNumber: string;
-  ticketStatus:string;
-  natureOfBusiness:string;
-  sheetRowNumber:number;
-}
+// interface User {
+//   _id: string;
+//   name: string;
+//   addres: string;
+//   nic:string;
+//   gender:string;
+//   career:string;
+//   email: string;
+//   serialNumber:string;
+//   docLink:string;
+//   contactNumber: string;
+//   ticketStatus:string;
+//   natureOfBusiness:string;
+//   sheetRowNumber:number;
+// }
 
 function getBadgeClass(status: string) {
   switch (status) {
     case "approved":
-      return "bg-green-500 text-white hover:ring-1 hover:ring-green-500 hover:bg-transparent hover:text-green-500"; 
+      return "bg-green-500 text-white hover:ring-1 hover:ring-green-500 hover:bg-transparent hover:text-green-500";
     case "pending":
-      return "bg-yellow-500 text-white hover:ring-1 hover:ring-yellow-500 hover:bg-transparent hover:text-yellow-500"; 
+      return "bg-yellow-500 text-white hover:ring-1 hover:ring-yellow-500 hover:bg-transparent hover:text-yellow-500";
     case "rejected":
-      return "bg-red-500 text-white hover:ring-1 hover:ring-red-500 hover:bg-transparent hover:text-red-500"; 
+      return "bg-red-500 text-white hover:ring-1 hover:ring-red-500 hover:bg-transparent hover:text-red-500";
     default:
-      return "bg-gray-500 text-white"; 
+      return "bg-gray-500 text-white";
   }
 }
 
@@ -86,18 +86,17 @@ export default function DetailsTable() {
   const [totalPages, setTotalPages] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { setSelectedUser } = useUserContext(); 
+  const { setSelectedUser } = useUserContext();
 
   const handleViewDetails = (user: any) => {
-    console.log("user",user)
-    setSelectedUser(user); 
+    console.log("user", user);
+    setSelectedUser(user);
     setIsDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
   };
-  
 
   useEffect(() => {
     if (darkMode) {
@@ -114,20 +113,40 @@ export default function DetailsTable() {
         setUsers(data.users);
         setTotalPages(data.pagination.totalPages);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
-
-  const handleConfirm = (id: number) => {
-    console.log(`Confirm clicked for ID ${id}`);
+  const handleConfirm =async (id: number) => {
+    try{
+      await updateUserStatus(id,'approved');
+      console.log(`User ${id} confirmed as approved`);
+      setUsers(prevUsers => 
+        prevUsers.map(user =>
+          user._id === id ? { ...user, ticketStatus: 'approved' } : user
+        )
+      );
+    }catch(error){
+      console.log(`Failed to confirm user ${id}:`,error);
+    }
   };
 
-  const handleDecline = (id: number) => {
-    console.log(`Decline clicked for ID ${id}`);
+  const handleDecline = async (id: number) => {
+    try {
+      await updateUserStatus(id, 'rejected');
+      console.log(`User ${id} marked as rejected`);
+      setUsers(prevUsers => 
+        prevUsers.map(user =>
+          user._id === id ? { ...user, ticketStatus: 'rejected' } : user
+        )
+      );
+    } catch (error) {
+      console.error(`Failed to reject user ${id}:`, error);
+    }
   };
 
   // Get the total number of pages
@@ -139,14 +158,46 @@ export default function DetailsTable() {
   //   currentPage * itemsPerPage
   // );
 
-  // Handle page change
+  
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
-  
+  const getActionsForStatus = (status: string, id: number) => {
+    switch (status) {
+      case "pending":
+        return (
+          <div className="flex justify-end gap-[2rem]">
+            <GiConfirmed
+              size="1.2rem"
+              className="cursor-pointer text-green-500"
+              onClick={() => handleConfirm(id)}
+            />
+            <RiDeleteBin6Fill
+              size="1.2rem"
+              className="cursor-pointer text-red-500"
+              onClick={() => handleDecline(id)}
+            />
+          </div>
+        );
+      case "approved":
+        return (
+          <div className="flex justify-end">
+            <span className="text-green-600 font-semibold">Account verified.</span>
+          </div>
+        );
+      case "rejected":
+        return (
+          <div className="flex justify-end">
+            <span className="text-red-600 font-semibold">Account rejected</span>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">
@@ -165,14 +216,6 @@ export default function DetailsTable() {
                 <CardDescription>Confirmed Members</CardDescription>
                 <CardTitle className="text-[1.2rem]">42</CardTitle>
               </CardHeader>
-              {/* <CardContent>
-                  <div className="text-xs text-muted-foreground">
-                    42
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Progress value={12} aria-label="12% increase" />
-                </CardFooter> */}
             </Card>
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
@@ -266,9 +309,13 @@ export default function DetailsTable() {
                             {user.career}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                          <Badge className={`text-xs ${getBadgeClass(user.ticketStatus)}`}>
-        {user.ticketStatus}
-      </Badge>
+                            <Badge
+                              className={`text-xs ${getBadgeClass(
+                                user.ticketStatus
+                              )}`}
+                            >
+                              {user.ticketStatus}
+                            </Badge>
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
                             {user.gender}
@@ -299,22 +346,7 @@ export default function DetailsTable() {
                             </DropdownMenu>
                           </TableCell>
                           <TableCell className="text-right">
-                            {user.isconfirmed ? (
-                              <Badge variant="default">Confirmed</Badge>
-                            ) : (
-                              <div className="flex justify-end gap-[2rem]">
-                                <GiConfirmed
-                                  size="1.2rem"
-                                  className="cursor-pointer text-green-500"
-                                  onClick={() => handleConfirm(user._id)}
-                                />
-                                <RiDeleteBin6Fill
-                                  size="1.2rem"
-                                  className="cursor-pointer text-red-500"
-                                  onClick={() => handleDecline(user._id)}
-                                />
-                              </div>
-                            )}
+                          {getActionsForStatus(user.ticketStatus, user._id)}
                           </TableCell>
                         </TableRow>
                       ))}
