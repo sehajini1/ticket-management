@@ -147,10 +147,10 @@ export default function DetailsTable() {
     
     try {
       if (selectedAction === 'approved') {
-       // await updateUserStatus(selectedUserId, 'approved');
+        await updateUserStatus(selectedUserId, 'approved');
         console.log(`User ${selectedUserId} confirmed as approved`);
       } else if (selectedAction === 'rejected') {
-        //await updateUserStatus(selectedUserId, 'rejected');
+        await updateUserStatus(selectedUserId, 'rejected');
         console.log(`User ${selectedUserId} marked as rejected`);
       } 
       
@@ -344,7 +344,7 @@ export default function DetailsTable() {
                           <TableCell className="hidden sm:table-cell">
                             {user.career}
                           </TableCell>
-                          <TableCell className="hidden sm:table-cell">
+                          <TableCell className="">
                             <Badge
                               className={`text-xs ${getBadgeClass(
                                 user.ticketStatus
