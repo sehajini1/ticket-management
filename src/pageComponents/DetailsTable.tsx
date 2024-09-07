@@ -261,10 +261,10 @@ export default function DetailsTable() {
               </CardHeader>
             </Card>
             <div className="flex justify-end items-center col-span-full">
-    <Button variant="outline" className="w-[8rem]">
-      Refresh
-    </Button>
-  </div>
+              <Button variant="outline" className="w-[8rem]" onClick={() => window.location.reload()}>
+                Refresh
+              </Button>
+            </div>
           </div>
           <Tabs defaultValue="week">
             <div className="flex items-center">
@@ -388,7 +388,7 @@ export default function DetailsTable() {
                             </DropdownMenu>
                           </TableCell>
                           <TableCell className="text-right">
-                          {getActionsForStatus(user.ticketStatus, user._id)}
+                            {getActionsForStatus(user.ticketStatus, user._id)}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -464,7 +464,7 @@ export default function DetailsTable() {
         isOpen={isStatusDialogOpen}
         onClose={handleCloseDialog}
         onConfirm={handleConfirm}
-        action={selectedAction || 'approved'}
+        action={selectedAction || "approved"}
       />
     </div>
   );
