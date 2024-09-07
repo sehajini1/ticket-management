@@ -6,7 +6,7 @@ interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  action: 'approved' | 'rejected' ; 
+  action: 'approved' | 'rejected' | 'duplicated' ; 
 }
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onClose, onConfirm, action }) => {
