@@ -10,11 +10,9 @@ import { Input } from "../../@/components/ui/input";
 import { Label } from "../../@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "pageComponents/contexts/AuthContext";
 import { login } from "Servers/API";
 
 export default function LoginForm() {
-    // const {setToken} = useAuth();
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null)
@@ -22,23 +20,21 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null); 
+    try {
+      const response = await login(username, password);
+      console.log("Login successful:", response);
 
-    // try {
-    //   const response = await login(username, password);
-    //     console.log("hi",response);
-    //   // Check if the response contains a token
-    //   if (response && response.token) {
-    //     // If login is successful, set the token and navigate to the home page
-    //     setToken(response.token);
-    //     navigate("/");
-    //   } else {
-    //     // If the response does not contain a token, treat it as an error
-    //     setError('Failed to login. Please check your username and password.');
-    //   }
-    // } catch (error: any) {
-    //   // If an unexpected error occurs, set a general error message
-    //   setError('Failed to login. Please check your username and password.');
-    // }
+      if (response && response.token) {
+            console.log("login token",response.token)
+            navigate("/");
+          } else {
+            setError('Failed to login. Please check your username and password.');
+          }
+
+    } catch (error: any) {
+      setError("Failed to login. Please check your username and password.");
+    }
   };
 
   return (
@@ -90,13 +86,6 @@ export default function LoginForm() {
             <div className="text-red-500 text-sm mt-2">
             {error && <p>{error}</p>}
             </div>
-            
-            {/* <div className="mt-4 text-center text-sm text-[#09090B]">
-              Don&apos;t have an account?{" "}
-              <Link to="/signup" className="underline">
-                Sign up
-              </Link>
-            </div> */}
           </form>
         </CardContent>
       </Card>
