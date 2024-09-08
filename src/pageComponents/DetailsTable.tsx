@@ -47,6 +47,8 @@ import UserDetailsDialog from "./AllDetailsDialog";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { useAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
+
 
 function getBadgeClass(status: string) {
   switch (status) {
@@ -72,7 +74,9 @@ export default function DetailsTable() {
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | 'duplicated' |null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isReloadLoading, setIsReloadLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
 
   const [approvedUsersCount, setApprovedUsersCount] = useState<number>(0);
@@ -234,25 +238,33 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
                 <CardDescription>Registered Members</CardDescription>
-                <CardTitle className="text-[1.2rem]">{totalUsersCount}</CardTitle>
+                <CardTitle className="text-[1.2rem]">
+                  {totalUsersCount}
+                </CardTitle>
               </CardHeader>
             </Card>
             <Card x-chunk="dashboard-05-chunk-2">
               <CardHeader className="pb-2">
                 <CardDescription>Confirmed Members</CardDescription>
-                <CardTitle className="text-[1.2rem]">{approvedUsersCount}</CardTitle>
+                <CardTitle className="text-[1.2rem]">
+                  {approvedUsersCount}
+                </CardTitle>
               </CardHeader>
             </Card>
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
                 <CardDescription>Pending Members</CardDescription>
-                <CardTitle className="text-[1.2rem]">{pendingUsersCount}</CardTitle>
+                <CardTitle className="text-[1.2rem]">
+                  {pendingUsersCount}
+                </CardTitle>
               </CardHeader>
             </Card>
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
                 <CardDescription>Rejected Members</CardDescription>
-                <CardTitle className="text-[1.2rem]">{rejectedUsersCount}</CardTitle>
+                <CardTitle className="text-[1.2rem]">
+                  {rejectedUsersCount}
+                </CardTitle>
               </CardHeader>
             </Card>
             <div className="flex justify-end items-center col-span-full">
@@ -269,12 +281,31 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
           <Tabs defaultValue="all">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="all" onClick={() => handleStatusChange('all')}>All</TabsTrigger>
-                <TabsTrigger value="pending" onClick={() => handleStatusChange('pending')}>Pending</TabsTrigger>
-                <TabsTrigger value="approved" onClick={() => handleStatusChange('approved')}>Approved</TabsTrigger>
-                <TabsTrigger value="rejected" onClick={() => handleStatusChange('rejected')}>Rejected</TabsTrigger>
+                <TabsTrigger
+                  value="all"
+                  onClick={() => handleStatusChange("all")}
+                >
+                  All
+                </TabsTrigger>
+                <TabsTrigger
+                  value="pending"
+                  onClick={() => handleStatusChange("pending")}
+                >
+                  Pending
+                </TabsTrigger>
+                <TabsTrigger
+                  value="approved"
+                  onClick={() => handleStatusChange("approved")}
+                >
+                  Approved
+                </TabsTrigger>
+                <TabsTrigger
+                  value="rejected"
+                  onClick={() => handleStatusChange("rejected")}
+                >
+                  Rejected
+                </TabsTrigger>
               </TabsList>
-              
             </div>
             <TabsContent value={status}>
               <Card x-chunk="dashboard-05-chunk-3">
@@ -305,71 +336,72 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {users.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={9} className="text-center py-4">
-                  No data available
-                </TableCell>
-              </TableRow>
-            ) : (
-                      users.map((user, index) => (
-                        <TableRow key={user._id}>
-                          <TableCell>
-                            {(currentPage - 1) * itemsPerPage + index + 1}
-                          </TableCell>
-                          <TableCell>
-                            <div className="font-medium">{user.name}</div>
-                            <div className="hidden text-sm text-muted-foreground md:inline">
-                              {user.email}
-                            </div>
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            {user.contactNumber}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            {user.nic}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            {user.career}
-                          </TableCell>
-                          <TableCell className="">
-                            <Badge
-                              className={`text-xs ${getBadgeClass(
-                                user.ticketStatus
-                              )}`}
-                            >
-                              {user.ticketStatus}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            {user.gender}
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  aria-haspopup="true"
-                                  size="icon"
-                                  variant="ghost"
-                                >
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">Toggle menu</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                  onClick={() => handleViewDetails(user)}
-                                >
-                                  View All Details
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {getActionsForStatus(user.ticketStatus, user._id)}
+                      {users.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={9} className="text-center py-4">
+                            No data available
                           </TableCell>
                         </TableRow>
-                      )))}
+                      ) : (
+                        users.map((user, index) => (
+                          <TableRow key={user._id}>
+                            <TableCell>
+                              {(currentPage - 1) * itemsPerPage + index + 1}
+                            </TableCell>
+                            <TableCell>
+                              <div className="font-medium">{user.name}</div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                {user.email}
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {user.contactNumber}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {user.nic}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {user.career}
+                            </TableCell>
+                            <TableCell className="">
+                              <Badge
+                                className={`text-xs ${getBadgeClass(
+                                  user.ticketStatus
+                                )}`}
+                              >
+                                {user.ticketStatus}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {user.gender}
+                            </TableCell>
+                            <TableCell>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    aria-haspopup="true"
+                                    size="icon"
+                                    variant="ghost"
+                                  >
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem
+                                    onClick={() => handleViewDetails(user)}
+                                  >
+                                    View All Details
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {getActionsForStatus(user.ticketStatus, user._id)}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
                     </TableBody>
                   </Table>
                 </CardContent>
@@ -444,6 +476,11 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
         onConfirm={handleConfirm}
         action={selectedAction || "approved"}
       />
+      <div className="fixed bottom-4 right-4">
+        <Button variant="outline" onClick={handleLogout} className="p-2 z-40">
+          <FiLogOut className="h-5 w-5" />
+        </Button>
+      </div>
     </div>
   );
 }
