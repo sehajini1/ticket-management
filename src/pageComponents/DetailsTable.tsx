@@ -89,7 +89,7 @@ export default function DetailsTable() {
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | 'duplicated' |null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-
+  const [isReloadLoading, setIsReloadLoading] = useState(false);
   const { setSelectedUser } = useUserContext();
 
   const handleViewDetails = (user: any) => {
@@ -236,6 +236,23 @@ export default function DetailsTable() {
     }
   };
 
+  const handleReload = async () => {
+    setIsReloadLoading(true); 
+    try {
+      const response = await fetch('https://dreo2l35cd.execute-api.ap-southeast-1.amazonaws.com/backend/user/load');
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      const data = await response.json();
+      console.log('API response:', data);
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setIsReloadLoading(false); 
+    }
+  };
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">
       <Header />
@@ -261,8 +278,13 @@ export default function DetailsTable() {
               </CardHeader>
             </Card>
             <div className="flex justify-end items-center col-span-full">
-              <Button variant="outline" className="w-[8rem]" onClick={() => window.location.reload()}>
-                Refresh
+              <Button
+                variant="outline"
+                className="w-[8rem]"
+                onClick={handleReload}
+                disabled={isReloadLoading}
+              >
+                {isReloadLoading ? "Loading..." : "Reload"}
               </Button>
             </div>
           </div>
