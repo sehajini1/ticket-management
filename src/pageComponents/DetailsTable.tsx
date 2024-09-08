@@ -45,7 +45,8 @@ import { fetchUsers, updateUserStatus } from "../Servers/API";
 import { useUserContext } from "./contexts/UserContext";
 import UserDetailsDialog from "./AllDetailsDialog";
 import ConfirmationDialog from "./ConfirmationDialog";
-
+import { useAuth } from "./contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function getBadgeClass(status: string) {
   switch (status) {
@@ -71,6 +72,9 @@ export default function DetailsTable() {
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | 'duplicated' |null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isReloadLoading, setIsReloadLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [approvedUsersCount, setApprovedUsersCount] = useState<number>(0);
 const [pendingUsersCount, setPendingUsersCount] = useState<number>(0);
 const [rejectedUsersCount, setRejectedUsersCount] = useState<number>(0);
@@ -78,6 +82,14 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
 
   const [status, setStatus] = useState('all');
   const { setSelectedUser } = useUserContext();
+
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const handleViewDetails = (user: any) => {
     console.log("user", user);
@@ -105,6 +117,8 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
   
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const data = await fetchUsers(currentPage, itemsPerPage, status);
         console.log("Fetched users:", status);
@@ -121,7 +135,7 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, status]);
+  }, [currentPage, status,itemsPerPage]);
 
 
   const handleConfirm = async () => {
@@ -196,20 +210,20 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
 
   const handleReload = async () => {
     setIsReloadLoading(true); 
-    try {
-      const response = await fetch('https://dreo2l35cd.execute-api.ap-southeast-1.amazonaws.com/backend/user/load');
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-      const data = await response.json();
-      console.log('API response:', data);
+    // try {
+    //   const response = await fetch('https://dreo2l35cd.execute-api.ap-southeast-1.amazonaws.com/backend/user/load');
+    //   if (!response.ok) {
+    //     throw new Error('Failed to fetch user data');
+    //   }
+    //   const data = await response.json();
+    //   console.log('API response:', data);
 
-      window.location.reload();
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    } finally {
-      setIsReloadLoading(false); 
-    }
+    //   window.location.reload();
+    // } catch (error) {
+    //   console.error('Error fetching user data:', error);
+    // } finally {
+    //   setIsReloadLoading(false); 
+    // }
   };
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">

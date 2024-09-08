@@ -1,3 +1,4 @@
+import { useAuth } from "pageComponents/contexts/AuthContext";
 import { Button } from "../../@/components/ui/button";
 import {
   Card,
@@ -10,23 +11,25 @@ import { Input } from "../../@/components/ui/input";
 import { Label } from "../../@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "Servers/API";
+import { login as apiLogin } from "Servers/API";
 
 export default function LoginForm() {
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate();
+    const {login} = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null); 
     try {
-      const response = await login(username, password);
+      const response = await apiLogin(username, password);
       console.log("Login successful:", response);
 
       if (response && response.token) {
             console.log("login token",response.token)
+            localStorage.setItem('token', response.token);
             navigate("/");
           } else {
             setError('Failed to login. Please check your username and password.');

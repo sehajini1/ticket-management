@@ -7,11 +7,17 @@ import { UserProvider } from "./pageComponents/contexts/UserContext";
 import LogingPage from "pages/LoadingPage";
 // import { AuthProvider } from "pageComponents/contexts/AuthContext";
 // import PrivateRoute from "PrivateRoute";
+import { AuthProvider, useAuth } from './pageComponents/contexts/AuthContext';
+
+const PrivateRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? element : <Navigate to="/login" />;
+};
 
 function App() {
   
   return (
-    // <AuthProvider>
+     <AuthProvider>
     <UserProvider>
     <Router>
           <Routes>
@@ -28,7 +34,7 @@ function App() {
           </Routes>
         </Router>
     </UserProvider>
-    // </AuthProvider>
+     </AuthProvider>
   );
 }
 
