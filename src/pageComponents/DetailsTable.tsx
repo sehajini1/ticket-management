@@ -90,6 +90,7 @@ export default function DetailsTable() {
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | 'duplicated' |null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isReloadLoading, setIsReloadLoading] = useState(false);
+  const [status, setStatus] = useState('all');
   const { setSelectedUser } = useUserContext();
 
   const handleViewDetails = (user: any) => {
@@ -113,10 +114,16 @@ export default function DetailsTable() {
     }
   }, [darkMode]);
 
+  const handleStatusChange = (newStatus: string) => {
+    setStatus(newStatus);
+    setCurrentPage(1); 
+  };
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchUsers(currentPage, itemsPerPage);
+        const data = await fetchUsers(currentPage, itemsPerPage, status);
+        console.log("Fetched users:", status);
         setUsers(data.users);
         setTotalPages(data.pagination.totalPages);
       } catch (error) {
@@ -126,7 +133,7 @@ export default function DetailsTable() {
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
+  }, [currentPage, status]);
 
   // const handleConfirm =async (id: number) => {
   //   try{
@@ -288,42 +295,16 @@ export default function DetailsTable() {
               </Button>
             </div>
           </div>
-          <Tabs defaultValue="week">
+          <Tabs defaultValue="all">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="week">All</TabsTrigger>
-                <TabsTrigger value="month">Confirmed</TabsTrigger>
-                <TabsTrigger value="year">Completed</TabsTrigger>
+                <TabsTrigger value="all" onClick={() => handleStatusChange('all')}>All</TabsTrigger>
+                <TabsTrigger value="pending" onClick={() => handleStatusChange('pending')}>Pending</TabsTrigger>
+                <TabsTrigger value="approved" onClick={() => handleStatusChange('approved')}>Approved</TabsTrigger>
               </TabsList>
-              <div className="ml-auto flex items-center ">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 gap-1 text-sm"
-                    >
-                      <ListFilter className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only">Filter</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuCheckboxItem checked>
-                      Fulfilled
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>
-                      Declined
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>
-                      Refunded
-                    </DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              
             </div>
-            <TabsContent value="week">
+            <TabsContent value={status}>
               <Card x-chunk="dashboard-05-chunk-3">
                 <CardHeader className="px-7"></CardHeader>
                 <CardContent>
@@ -367,7 +348,7 @@ export default function DetailsTable() {
                             {user.contactNumber}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {user.address}
+                            {user.nic}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {user.career}

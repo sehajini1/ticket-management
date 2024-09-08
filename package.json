@@ -1,7 +1,6 @@
 {
   "name": "admin-dashboard",
   "version": "0.1.0",
-  "proxy": "https://dreo2l35cd.execute-api.ap-southeast-1.amazonaws.com",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^2.1.5",
