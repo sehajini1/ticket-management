@@ -243,6 +243,7 @@ export default function DetailsTable() {
                 <TabsTrigger value="all" onClick={() => handleStatusChange('all')}>All</TabsTrigger>
                 <TabsTrigger value="pending" onClick={() => handleStatusChange('pending')}>Pending</TabsTrigger>
                 <TabsTrigger value="approved" onClick={() => handleStatusChange('approved')}>Approved</TabsTrigger>
+                <TabsTrigger value="rejected" onClick={() => handleStatusChange('rejected')}>Rejected</TabsTrigger>
               </TabsList>
               
             </div>
@@ -275,7 +276,14 @@ export default function DetailsTable() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {users.map((user, index) => (
+                    {users.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={9} className="text-center py-4">
+                  No data available
+                </TableCell>
+              </TableRow>
+            ) : (
+                      users.map((user, index) => (
                         <TableRow key={user._id}>
                           <TableCell>
                             {(currentPage - 1) * itemsPerPage + index + 1}
@@ -332,7 +340,7 @@ export default function DetailsTable() {
                             {getActionsForStatus(user.ticketStatus, user._id)}
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )))}
                     </TableBody>
                   </Table>
                 </CardContent>
