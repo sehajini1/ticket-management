@@ -2,7 +2,7 @@ import axios from "axios";
 
 const BASE_URL = "/backend";
 
-// get users
+// get usersdd
 export const fetchUsers = async (page: number, limit: number) => {
   try {
     const response = await axios.get(
