@@ -4,9 +4,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import DashboardPage from "pages/DashboardPage";
 import LogingPage from "pages/LoadingPage";
 import { UserProvider } from "./pageComponents/contexts/UserContext";
+import { AuthProvider } from "pageComponents/contexts/AuthContext";
 
 function App() {
   return (
+    <AuthProvider>
     <UserProvider>
       <Router>
         <Routes>
@@ -15,6 +17,7 @@ function App() {
         </Routes>
       </Router>
     </UserProvider>
+    </AuthProvider>
   );
 }
 

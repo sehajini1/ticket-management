@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Button } from "../../@/components/ui/button";
 import {
   Card,
@@ -11,15 +10,35 @@ import { Input } from "../../@/components/ui/input";
 import { Label } from "../../@/components/ui/label";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "pageComponents/contexts/AuthContext";
+import { login } from "Servers/API";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState<string>("");
+    const {setToken} = useAuth();
+  const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/");
+
+    try {
+      const response = await login(username, password);
+        console.log("hi",response);
+      // Check if the response contains a token
+      if (response && response.token) {
+        // If login is successful, set the token and navigate to the home page
+        setToken(response.token);
+        navigate("/");
+      } else {
+        // If the response does not contain a token, treat it as an error
+        setError('Failed to login. Please check your username and password.');
+      }
+    } catch (error: any) {
+      // If an unexpected error occurs, set a general error message
+      setError('Failed to login. Please check your username and password.');
+    }
   };
 
   return (
@@ -28,7 +47,7 @@ export default function LoginForm() {
         <CardHeader>
           <CardTitle className="text-2xl text-[#09090B]">Login</CardTitle>
           <CardDescription className="text-[#71717A]">
-            Enter your email below to login to your account
+            Enter your user name below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -36,15 +55,15 @@ export default function LoginForm() {
             <div className="grid gap-4">
               <div className="grid gap-2 ">
                 <Label htmlFor="email" className="text-[#09090B]">
-                  Email
+                  User Name
                 </Label>
                 <Input
-                  id="email"
-                  type="email"
+                  id="username"
+                  type="text"
                   placeholder="m@example.com"
                   className="border-inherit text-[#71717A] rounded-[0.5rem]"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUserName(e.target.value)}
                   required
                 />
               </div>
@@ -53,12 +72,6 @@ export default function LoginForm() {
                   <Label htmlFor="password" className="text-[#09090B]">
                     Password
                   </Label>
-                  <Link
-                    to="#"
-                    className="ml-auto inline-block text-sm underline text-[#09090B]"
-                  >
-                    Forgot your password?
-                  </Link>
                 </div>
                 <Input
                   id="password"
@@ -72,14 +85,18 @@ export default function LoginForm() {
               <Button
                 type="submit"
                 className="w-full rounded-[0.5rem] bg-[#18181B] text-[#FAFAFA] hover:bg-[#2F2F32] hover:text-[#E4E4E7]"
-              ></Button>
+              >Login</Button>
             </div>
-            <div className="mt-4 text-center text-sm text-[#09090B]">
+            <div className="text-red-500 text-sm mt-2">
+            {error && <p>{error}</p>}
+            </div>
+            
+            {/* <div className="mt-4 text-center text-sm text-[#09090B]">
               Don&apos;t have an account?{" "}
               <Link to="/signup" className="underline">
                 Sign up
               </Link>
-            </div>
+            </div> */}
           </form>
         </CardContent>
       </Card>

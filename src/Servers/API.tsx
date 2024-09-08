@@ -37,3 +37,20 @@ export const updateUserStatus = async (userId: number, status: string) => {
     throw error;
   }
 };
+
+//login
+export const login = async (username: string, password: string) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/admin/login`, {
+      username,
+      password
+    });
+    console.log("Request URL:", `${BASE_URL}/admin/login`);
+    console.log("Response data:", response.data);
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error logging in:", error.message || error.response);
+    throw error;
+  }
+};
