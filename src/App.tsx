@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import DashboardPage from "pages/DashboardPage";
 //import LogingPage from "pages/LoadingPage";
 import { UserProvider } from "./pageComponents/contexts/UserContext";
+import LogingPage from "pages/LoadingPage";
 // import { AuthProvider } from "pageComponents/contexts/AuthContext";
 // import PrivateRoute from "PrivateRoute";
 
@@ -15,7 +16,7 @@ function App() {
     <Router>
           <Routes>
             {/* Public routes */}
-            {/* <Route path="/login" element={<LogingPage />} /> */}
+            <Route path="/login" element={<LogingPage />} />
 
             {/* Protected routes */}
             {/* <Route element={<PrivateRoute />}> */}
