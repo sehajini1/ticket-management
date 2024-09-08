@@ -71,6 +71,11 @@ export default function DetailsTable() {
   const [selectedAction, setSelectedAction] = useState<'approved' | 'rejected' | 'duplicated' |null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isReloadLoading, setIsReloadLoading] = useState(false);
+  const [approvedUsersCount, setApprovedUsersCount] = useState<number>(0);
+const [pendingUsersCount, setPendingUsersCount] = useState<number>(0);
+const [rejectedUsersCount, setRejectedUsersCount] = useState<number>(0);
+const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
+
   const [status, setStatus] = useState('all');
   const { setSelectedUser } = useUserContext();
 
@@ -104,6 +109,10 @@ export default function DetailsTable() {
         const data = await fetchUsers(currentPage, itemsPerPage, status);
         console.log("Fetched users:", status);
         setUsers(data.users);
+        setApprovedUsersCount(data.stats.approvedUsersCount);
+        setPendingUsersCount(data.stats.pendingUsersCount);
+        setRejectedUsersCount(data.stats.rejectedUsersCount);
+        setTotalUsersCount(data.stats.totalUsersCount);
         setTotalPages(data.pagination.totalPages);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -211,19 +220,25 @@ export default function DetailsTable() {
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
                 <CardDescription>Registered Members</CardDescription>
-                <CardTitle className="text-[1.2rem]">50</CardTitle>
+                <CardTitle className="text-[1.2rem]">{totalUsersCount}</CardTitle>
               </CardHeader>
             </Card>
             <Card x-chunk="dashboard-05-chunk-2">
               <CardHeader className="pb-2">
                 <CardDescription>Confirmed Members</CardDescription>
-                <CardTitle className="text-[1.2rem]">42</CardTitle>
+                <CardTitle className="text-[1.2rem]">{approvedUsersCount}</CardTitle>
               </CardHeader>
             </Card>
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
-                <CardDescription>Total Attendance</CardDescription>
-                <CardTitle className="text-[1.2rem]">40</CardTitle>
+                <CardDescription>Pending Members</CardDescription>
+                <CardTitle className="text-[1.2rem]">{pendingUsersCount}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card x-chunk="dashboard-05-chunk-1">
+              <CardHeader className="pb-2">
+                <CardDescription>Rejected Members</CardDescription>
+                <CardTitle className="text-[1.2rem]">{rejectedUsersCount}</CardTitle>
               </CardHeader>
             </Card>
             <div className="flex justify-end items-center col-span-full">
