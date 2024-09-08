@@ -1,5 +1,4 @@
-import { ListFilter, MoreHorizontal } from "lucide-react";
-
+import {  MoreHorizontal } from "lucide-react";
 import { Badge } from "../@/components/ui/badge";
 import { Button } from "../@/components/ui/button";
 import {
@@ -11,11 +10,8 @@ import {
 } from "../@/components/ui/card";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../@/components/ui/dropdown-menu";
 import {
@@ -50,21 +46,6 @@ import { useUserContext } from "./contexts/UserContext";
 import UserDetailsDialog from "./AllDetailsDialog";
 import ConfirmationDialog from "./ConfirmationDialog";
 
-// interface User {
-//   _id: string;
-//   name: string;
-//   addres: string;
-//   nic:string;
-//   gender:string;
-//   career:string;
-//   email: string;
-//   serialNumber:string;
-//   docLink:string;
-//   contactNumber: string;
-//   ticketStatus:string;
-//   natureOfBusiness:string;
-//   sheetRowNumber:number;
-// }
 
 function getBadgeClass(status: string) {
   switch (status) {
@@ -75,7 +56,7 @@ function getBadgeClass(status: string) {
     case "rejected":
       return "bg-red-500 text-white hover:ring-1 hover:ring-red-500 hover:bg-transparent hover:text-red-500";
     default:
-      return "bg-gray-500 text-white";
+      return "bg-gray-500 text-white hover:ring-1 hover:ring-gray-500 hover:bg-transparent hover:text-gray-500";
   }
 }
 
@@ -103,8 +84,6 @@ export default function DetailsTable() {
     setIsDialogOpen(false);
     setIsStatusDialogOpen(false);
   };
-
-  
 
   useEffect(() => {
     if (darkMode) {
@@ -135,19 +114,6 @@ export default function DetailsTable() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, status]);
 
-  // const handleConfirm =async (id: number) => {
-  //   try{
-  //     await updateUserStatus(id,'approved');
-  //     console.log(`User ${id} confirmed as approved`);
-  //     setUsers(prevUsers => 
-  //       prevUsers.map(user =>
-  //         user._id === id ? { ...user, ticketStatus: 'approved' } : user
-  //       )
-  //     );
-  //   }catch(error){
-  //     console.log(`Failed to confirm user ${id}:`,error);
-  //   }
-  // };
 
   const handleConfirm = async () => {
     if (selectedUserId === null || selectedAction === null) return;
@@ -177,30 +143,6 @@ export default function DetailsTable() {
     setSelectedUserId(id);
     setIsStatusDialogOpen(true);
   };
-
-  // const handleDecline = async (id: number) => {
-  //   try {
-  //     await updateUserStatus(id, 'rejected');
-  //     console.log(`User ${id} marked as rejected`);
-  //     setUsers(prevUsers => 
-  //       prevUsers.map(user =>
-  //         user._id === id ? { ...user, ticketStatus: 'rejected' } : user
-  //       )
-  //     );
-  //   } catch (error) {
-  //     console.error(`Failed to reject user ${id}:`, error);
-  //   }
-  // };
-
-  // Get the total number of pages
-  // const totalPages = Math.ceil(staticData.length / itemsPerPage);
-
-  // Slice the data to only show items for the current page
-  // const currentData = staticData.slice(
-  //   (currentPage - 1) * itemsPerPage,
-  //   currentPage * itemsPerPage
-  // );
-
   
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
@@ -378,15 +320,11 @@ export default function DetailsTable() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
                                 <DropdownMenuItem
                                   onClick={() => handleViewDetails(user)}
                                 >
                                   View All Details
                                 </DropdownMenuItem>
-                                {/* <DropdownMenuItem>
-                                  View the Slipt
-                                </DropdownMenuItem> */}
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
