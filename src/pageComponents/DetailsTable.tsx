@@ -78,7 +78,7 @@ export default function DetailsTable() {
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
-
+const [isConfirming, setIsConfirming] = useState(false);
   const [approvedUsersCount, setApprovedUsersCount] = useState<number>(0);
 const [pendingUsersCount, setPendingUsersCount] = useState<number>(0);
 const [rejectedUsersCount, setRejectedUsersCount] = useState<number>(0);
@@ -145,6 +145,7 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
   const handleConfirm = async () => {
     if (selectedUserId === null || selectedAction === null) return;
     
+    setIsConfirming(true);
     try {
       if (selectedAction === 'approved') {
         await updateUserStatus(selectedUserId, 'approved');
@@ -162,6 +163,8 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
       handleCloseDialog();
     } catch (error) {
       console.error(`Failed to perform action on user ${selectedUserId}:`, error);
+    }finally{
+      setIsConfirming(false);
     }
   };
 
@@ -475,6 +478,7 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
         onClose={handleCloseDialog}
         onConfirm={handleConfirm}
         action={selectedAction || "approved"}
+        loading={isConfirming}
       />
       <div className="fixed bottom-4 right-4">
         <Button variant="outline" onClick={handleLogout} className="p-2 z-40">
