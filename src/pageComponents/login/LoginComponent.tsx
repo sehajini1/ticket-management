@@ -9,7 +9,7 @@ import {
 } from "../../@/components/ui/card";
 import { Input } from "../../@/components/ui/input";
 import { Label } from "../../@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login as apiLogin } from "Servers/API";
 
@@ -18,7 +18,13 @@ export default function LoginForm() {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate();
-    const {login} = useAuth();
+    const {login, isAuthenticated} = useAuth();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+          navigate('/');
+        }
+      }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +35,7 @@ export default function LoginForm() {
 
       if (response && response.token) {
             console.log("login token",response.token)
-            localStorage.setItem('token', response.token);
-            navigate("/");
+            login(response.token);
           } else {
             setError('Failed to login. Please check your username and password.');
           }

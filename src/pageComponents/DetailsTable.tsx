@@ -210,20 +210,20 @@ const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
 
   const handleReload = async () => {
     setIsReloadLoading(true); 
-    // try {
-    //   const response = await fetch('https://dreo2l35cd.execute-api.ap-southeast-1.amazonaws.com/backend/user/load');
-    //   if (!response.ok) {
-    //     throw new Error('Failed to fetch user data');
-    //   }
-    //   const data = await response.json();
-    //   console.log('API response:', data);
+    try {
+      const response = await fetch('https://dreo2l35cd.execute-api.ap-southeast-1.amazonaws.com/backend/user/load');
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      const data = await response.json();
+      console.log('API response:', data);
 
-    //   window.location.reload();
-    // } catch (error) {
-    //   console.error('Error fetching user data:', error);
-    // } finally {
-    //   setIsReloadLoading(false); 
-    // }
+      window.location.reload();
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setIsReloadLoading(false); 
+    }
   };
   return (
     <div className="flex h-screen w-full flex-col bg-muted/40">

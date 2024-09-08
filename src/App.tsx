@@ -26,7 +26,7 @@ function App() {
 
             {/* Protected routes */}
             {/* <Route element={<PrivateRoute />}> */}
-              <Route path="/" element={<DashboardPage />} />
+            <Route path="/" element={<PrivateRoute element={<DashboardPage />} />} />
             {/* </Route> */}
 
             {/* Fallback route */}
