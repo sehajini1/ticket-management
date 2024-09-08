@@ -1,10 +1,10 @@
-import React from "react";
-import LoginForm from "pageComponents/login/LoginComponent";
+// import React from "react";
+// import LoginForm from "pageComponents/login/LoginComponent";
 
-export default function LogingPage(){
-    return(
-        <>
-        <LoginForm/>
-        </>
-    );
-}
+// export default function LogingPage(){
+//     return(
+//         <>
+//         <LoginForm/>
+//         </>
+//     );
+// }
