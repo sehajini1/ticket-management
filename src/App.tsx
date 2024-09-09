@@ -5,6 +5,7 @@ import DashboardPage from "pages/DashboardPage";
 //import LogingPage from "pages/LoadingPage";
 import { UserProvider } from "./pageComponents/contexts/UserContext";
 import LogingPage from "pages/LoadingPage";
+import TicketPage from "pages/TicketPage";
 // import { AuthProvider } from "pageComponents/contexts/AuthContext";
 // import PrivateRoute from "PrivateRoute";
 import { AuthProvider, useAuth } from './pageComponents/contexts/AuthContext';
@@ -23,6 +24,7 @@ function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/login" element={<LogingPage />} />
+            <Route path="/ticket/:id" element={<TicketPage />} />
 
             {/* Protected routes */}
             {/* <Route element={<PrivateRoute />}> */}
